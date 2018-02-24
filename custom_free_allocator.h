@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 template <typename T
-         ,typename Delet = std::default_delete<T>
+         ,typename Delet = std::default_delete<T[]>
          ,typename Alloc = std::allocator<T>
          >
 class custom_free_allocator

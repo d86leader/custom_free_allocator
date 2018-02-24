@@ -8,7 +8,7 @@ using std::cout;
 using std::endl;
 using std::unique_ptr;
 
-using arr_alloc = custom_free_allocator< int, std::default_delete<int[]> >;
+using arr_alloc = custom_free_allocator<int>;
 
 int main()
 {

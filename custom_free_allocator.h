@@ -1,3 +1,6 @@
+// copyright: d86leader, 2018
+// created and maintained by d86leader@github.com
+// released under GNU GPLv2
 #include <memory>
 #include <set>
 #include <stdexcept>

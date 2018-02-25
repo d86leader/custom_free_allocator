@@ -28,7 +28,7 @@ Now you have the memory in `memory` and vector won't delete it! When you want to
 ```
 destructor(memory);
 ```
-*Warning*: the vector can still access the memory and place new elements there. It can't delete or destroy them, but vector overwriting elements that should be desstroyed is undefined behavior.
+*Warning*: the vector can still access the memory and place new elements there. It can't delete or destroy them, but vector overwriting elements that should be destroyed is undefined behavior.
 
 ## Formal specification
 
@@ -44,6 +44,7 @@ Where:
  - `T` - structure element type
  - `Delet` - deleter used to delete objects not created by allocator
  - `Alloc` - allocator used to allocate/deallocate objects
+
 The main use of `Delet` is for having `unique_ptr` and `shared_ptr` which may at some point own pointer to memory allocated by other means than by `custom_free_allocator`.
 ### Member types
  - `cleanup_deleter` - deleter used to free memory after it has been acquired from allocator. Can and is also used to free other types of memory.

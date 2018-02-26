@@ -12,7 +12,7 @@ using arr_alloc = custom_free_allocator<int>;
 
 int main()
 {
-	unique_ptr<int, arr_alloc::cleanup_deleter> released;
+	unique_ptr<int[], arr_alloc::cleanup_deleter> released;
 
 	{
 		vector<int, arr_alloc> v;
@@ -30,7 +30,7 @@ int main()
 		}
 		else
 		{
-			cout << "first element of released: " << *released <<endl;
+			cout << "first element of released: " << released[0] <<endl;
 		}
 	}
 	if (released)

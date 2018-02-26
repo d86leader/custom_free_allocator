@@ -111,7 +111,7 @@ public:
 
 	// make memory not owned by structure anymore
 	// returns unique_ptr owning the memory that will delete it correctly
-	std::unique_ptr<T, cleanup_deleter> own_memory(T* addr)
+	std::unique_ptr<T[], cleanup_deleter> own_memory(T* addr)
 	{
 		for (auto t : used_memory)
 		{
@@ -119,7 +119,7 @@ public:
 			{
 				//releasing memory
 				moved_memory.emplace(t.first, t.second);
-				return std::unique_ptr<T, cleanup_deleter>(addr);
+				return std::unique_ptr<T[], cleanup_deleter>(addr);
 			}
 		}
 		throw std::runtime_error("releasing unaquired memory");
@@ -127,7 +127,7 @@ public:
 
 	// make memory not owned by structure anymore
 	// returns shared_ptr owning the memory that will delete it correctly
-	std::shared_ptr<T> own_shared(T* addr)
+	std::shared_ptr<T[]> own_shared(T* addr)
 	{
 		for (auto t : used_memory)
 		{
@@ -135,7 +135,7 @@ public:
 			{
 				//releasing memory
 				moved_memory.emplace(t.first, t.second);
-				return std::shared_ptr<T>(addr, cleanup_deleter());
+				return std::shared_ptr<T[]>(addr, cleanup_deleter());
 			}
 		}
 		throw std::runtime_error("releasing unaquired memory");

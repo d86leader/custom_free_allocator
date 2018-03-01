@@ -9,4 +9,4 @@ run-simple_test: simple_test
 	./simple_test
 
 simple_test: simple_test.cpp custom_free_allocator.h
-	${CXX} -g $^ -o $@ $(CXXHEADERS)
+	${CXX} -g $< -o $@ $(CXXHEADERS)

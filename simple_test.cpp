@@ -13,6 +13,7 @@ using arr_alloc = custom_free_allocator<int>;
 int main()
 {
 	unique_ptr<int[], arr_alloc::cleanup_deleter> released;
+	vector<int, arr_alloc> living_v {4, 5, 6, 7};
 
 	{
 		vector<int, arr_alloc> v;
@@ -32,7 +33,11 @@ int main()
 		{
 			cout << "first element of released: " << released[0] <<endl;
 		}
+
+		auto living_ptr = living_v.get_allocator().own_memory(living_v.data());
+		cout << "removing living_ptr\n";
 	}
+	cout << "done\n";
 	if (released)
 	{
 		cout << "released memory: ";
@@ -42,6 +47,8 @@ int main()
 		}
 		cout << endl;
 	}
+
+	auto living_ptr = living_v.get_allocator().own_memory(living_v.data());
 
 	//try the deleter for other thing
 	arr_alloc::cleanup_deleter deleter;

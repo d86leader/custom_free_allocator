@@ -5,6 +5,8 @@
 #include <list>
 #include <stdexcept>
 
+// used to indicate what memory has been allocated
+// previously an std::pair, but having a custom struct is more readable
 template<typename T>
 struct _CFA_used_mem_status
 {
@@ -12,6 +14,7 @@ struct _CFA_used_mem_status
 	T* address;
 	size_t size;
 };
+// used to indicate how many entities still use the moved memory
 template<typename T>
 struct _CFA_moved_mem_status
 {
@@ -33,6 +36,10 @@ private:
 	static std::list<_CFA_used_mem_status<T>>  used_memory;
 	static std::list<_CFA_moved_mem_status<T>> moved_memory;
 
+	// Used when an entity stops using released memory.
+	// Decreases use_count and frees the memory when nothing uses it.
+	// A template is used here as there were some problems with instancing
+	// a set<T>::iterator type
 	template <typename iterator>
 	static void decrease_use_count(iterator it)
 	{
@@ -48,8 +55,13 @@ private:
 
 	Alloc m_allocator;
 public:
+	// A helper struct used to deallocate released memory.
+	// Best used with smart pointers
 	struct cleanup_deleter
 	{
+		// Delete released memory.
+		// As a smart pointer can sometimes have some other kind of memory,
+		// it will also free a memory if it was not found in moved index
 		void operator() (T* p)
 		{
 			// testing if was moved
@@ -84,6 +96,7 @@ public:
 		return *this;
 	}
 
+	// Allocator requirement
 	T* allocate(size_t n)
 	{
 		//allocating n objects
@@ -92,6 +105,7 @@ public:
 		return address;
 	}
 
+	// Allocator requirement
 	void deallocate(T* p, size_t n)
 	{
 		// testing if was moved
@@ -107,6 +121,7 @@ public:
 		m_allocator.deallocate(p, n);
 	}
 
+	// Allocator requirement
 	template< class U >
 	void destroy( U* p )
 	{
@@ -123,10 +138,11 @@ public:
 		m_allocator.destroy(p);
 	}
 
-	// make memory not owned by structure anymore
-	// returns the deleter for this memory
+	// Make memory not owned by structure anymore.
+	// Returns the deleter for this memory.
 	cleanup_deleter release_memory(T* addr)
 	{
+		// find the memory in used index
 		for (auto t : used_memory)
 		{
 			if (t.address == addr)

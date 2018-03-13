@@ -15,6 +15,7 @@ int main()
 	{
 		unique_ptr<int[], arr_alloc::cleanup_deleter> released;
 		vector<int, arr_alloc> living_v {4, 5, 6, 7};
+		vector<int, arr_alloc> another_v {10, 11, 12, 13};
 
 		{
 			vector<int, arr_alloc> v;
@@ -49,12 +50,14 @@ int main()
 			cout << endl;
 		}
 
-		auto living_ptr = living_v.get_allocator().own_memory(living_v.data());
+		auto other_ptr = another_v.get_allocator().own_memory(another_v.data());
+		cout << "tried to get a living_ptr\n";
 
 		//try the deleter for other thing
 		arr_alloc::cleanup_deleter deleter;
 		int* test_memory = new int [10];
 		deleter(test_memory);
+		cout << "tried the deleter for other thing\n";
 	}
 
 	cout << "no exception means all is good\n";

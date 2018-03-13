@@ -143,12 +143,13 @@ public:
 	cleanup_deleter release_memory(T* addr)
 	{
 		// find the memory in used index
-		for (auto t : used_memory)
+		for (auto it = used_memory.begin(); it != used_memory.end(); ++it)
 		{
-			if (t.address == addr)
+			if (it->address == addr)
 			{
 				//releasing memory
-				moved_memory.emplace_back(t.address, t.size);
+				moved_memory.emplace_back(it->address, it->size);
+				used_memory.erase(it);
 				return cleanup_deleter();
 			}
 		}

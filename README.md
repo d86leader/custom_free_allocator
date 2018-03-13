@@ -28,6 +28,12 @@ Now you have the memory in `memory` and vector won't delete it! When you want to
 ```
 destructor(memory);
 ```
+Or if you are happy with smart pointers, you can use some convenience wrappers:
+```
+auto unique = custom_free_allocator<int>::own_memory(my_vector);
+/* above or below, not simultaneously, wouldn't work releasing both */
+auto shared = custom_free_allocator<int>::own_shared(my_vector);
+```
 *Warning*: the vector can still access the memory and place new elements there. It can't delete or destroy them, but vector overwriting elements that should be destroyed is undefined behavior.
 
 ## Formal specification
@@ -58,8 +64,12 @@ The main use of `Delet` is for having `unique_ptr` and `shared_ptr` which may at
 
 For meaningful methods:
  - `cleanup_deleter release_memory(T* addr);` - make it so the memory at `addr` is not owned by the data structure anymore. Returns a deleter which can free this and any other memory. Throws `std::runtime_error` if `addr` was not allocated by `custom_free_allocator` of appropriate type.
- - `std::unique_ptr<T, cleanup_deleter> own_memory(T* addr)` - same as `release_memory`, but returns a `unique_ptr` owning the memory with a correct deleter type. Can throw the same `std::runtime_error` if `addr` was not allocated by `custom_free_allocator` of appropriate type.
+ - `std::unique_ptr<T[], cleanup_deleter> own_memory(T* addr)` - same as `release_memory`, but returns a `unique_ptr` owning the memory with a correct deleter type. Can throw the same `std::runtime_error` if `addr` was not allocated by `custom_free_allocator` of appropriate type.
  - `std::shared_ptr<T> own_shared(T* addr)` - same as `own_memory`, but returns a `std::shared_ptr` owning the memory with a correct deleter type. Can throw the same `std::runtime_error` if `addr` was not allocated by `custom_free_allocator` of appropriate type.
  - `Alloc get_allocator() const;` - returns underlying allocator.
+
+### Static functions
+ - `static std::unique_ptr<T[], cleanup_deleter> own_memory(C container);` - same as calling `.own_memory(container.data())`
+ - `static std::unique_ptr<T> own_shared(C container);` - same as calling `.own_shared(container.data())`
 
 Allows default, copy and move constructors, which are defined as `= default;`. Requires no destructor.

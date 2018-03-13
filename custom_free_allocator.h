@@ -172,6 +172,21 @@ public:
 		return std::shared_ptr<T>(addr, cleanup_deleter());
 	}
 
+	// static wrappers for two methods above
+	template<typename C>
+	static inline
+	std::unique_ptr<T[], cleanup_deleter> own_memory(C container)
+	{
+		return container.get_allocator().own_memory(container.data());
+	}
+	template<typename C>
+	static inline
+	std::shared_ptr<T> own_shared(C container)
+	{
+		return container.get_allocator().own_shared(container.data());
+	}
+
+
 	Alloc get_allocator() const {return m_allocator;}
 
 	friend bool operator== (

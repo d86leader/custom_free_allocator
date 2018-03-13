@@ -50,7 +50,7 @@ int main()
 			cout << endl;
 		}
 
-		auto other_ptr = another_v.get_allocator().own_memory(another_v.data());
+		auto other_ptr = custom_free_allocator<int>::own_shared(another_v);
 		cout << "tried to get a living_ptr\n";
 
 		//try the deleter for other thing

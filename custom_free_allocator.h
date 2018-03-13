@@ -166,10 +166,10 @@ public:
 
 	// make memory not owned by structure anymore
 	// returns shared_ptr owning the memory that will delete it correctly
-	std::shared_ptr<T[]> own_shared(T* addr)
+	std::shared_ptr<T> own_shared(T* addr)
 	{
 		this->release_memory(addr);
-		return std::shared_ptr<T[]>(addr, cleanup_deleter());
+		return std::shared_ptr<T>(addr, cleanup_deleter());
 	}
 
 	Alloc get_allocator() const {return m_allocator;}

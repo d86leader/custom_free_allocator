@@ -120,8 +120,19 @@ public:
 				return;
 			}
 		}
-		//deallocating n objects
-		m_allocator.deallocate(p, n);
+		// testing if was allocated
+		for (auto it = used_memory.begin(); it != used_memory.end(); ++it)
+		{
+			if (it->address == p)
+			{
+				// don't forget to erase it from the index
+				used_memory.erase(it);
+
+				m_allocator.deallocate(p, n);
+				return;
+			}
+		}
+		throw std::runtime_error("custom_free_allocator: trying to deallocate not allocated memory");
 	}
 
 	// Allocator requirement

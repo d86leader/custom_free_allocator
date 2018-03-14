@@ -32,6 +32,9 @@ template <typename T
          >
 class custom_free_allocator
 {
+	#ifdef _CFA_TEST
+	  friend int main();
+	#endif //def _CFA_TEST
 private:
 	static std::list<_CFA_used_mem_status<T>>  used_memory;
 	static std::list<_CFA_moved_mem_status<T>> moved_memory;
